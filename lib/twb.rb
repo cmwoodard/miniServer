@@ -9,23 +9,21 @@ vikings = Hash.new
 vikings[:viking] = Hash.new
 content_length = 0
 
-system("cls")
+#system("cls")
 
-socket = TCPSocket.open( ip, port )
+sock = TCPSocket.open( ip, port )
 print "What kind of data would you like to send?\r\n
 1. GET
 2. POST\n\n->"
 
 case gets.chomp.to_i
 	when 1
-		system("cls")
-		request = "#{r_type} #{path} HTTP/1.0\r\n\r\n"
-		puts request
-		socket.print(request)
-		response = socket.read
+		#system("cls")
+		#request = "#{r_type} #{path} HTTP/1.0\r\n\r\n"
+		request = "test"
+		sock.print(request)
+		
 		#headers,body = response.split("\r\n\r\n", 2) 
-		print response
-		#socket.close
 	when 2
 		r_type = "POST"
 		system("cls")
@@ -44,10 +42,14 @@ case gets.chomp.to_i
 		socket.puts "Content-Length: #{content_length} \r\n\r\n"
 		socket.puts(vikings.to_json)
 	else
-	puts "Invalid type"
+		puts "Invalid type"
 end
-	
 
+
+while line = sock.gets   # Read lines from the socket
+  puts line.chop      # And print with platform line terminator
+end
+sock.close
 
 
 

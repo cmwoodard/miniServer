@@ -2,13 +2,13 @@ require 'socket'
 require 'json'
 
 ip = 'localhost'
-port = 2000
-server = TCPServer.open(ip, port)
+port = 2001
+server = TCPServer.open(port)
 
 loop{		
 	Thread.start(server.accept) do |client|
 		#http request(hopefully)
-		request =  client.read.
+		request =  client.read.chomp
 		request_array = request.split()
 		response_code = 200
 		response_message = "OK"
@@ -19,22 +19,24 @@ loop{
 		index = ""
 		#headers,body = request.split("\r\n\r\n", 2)
 		puts request_type
-		puts requested_file
 		
 		case request_type
 			when "GET"			
-				if File.exist?(requested_file)				
+				if File.exist?(requested_file)	
+					puts "#{requested_file} exists"
 					index = File.open(requested_file, "r").read
 					header_size = index.length
-
+	
 				else
+					pputs "#{requested_file} does not exist"
 					response_code = 404
 					response_message = "File Not Found"
 					header_size = 0
 				end
-				client.puts "#{http_v} #{response_code} #{response_message}\r\n\r\n "
-				client.puts "Content-Length: #{header_size}\r\n\r\n"
-				client.puts "#{index}"
+				client.puts "test"
+				#client.puts "#{http_v} #{response_code} #{response_message}\r\n\r\n "
+				#client.puts "Content-Length: #{header_size}\r\n\r\n"
+				#client.puts "#{index}"
 			when "HEAD"
 				client.puts "This is a HEAD request"
 			when "POST"
@@ -42,7 +44,9 @@ loop{
 				#puts "Headers: #{headers}\r\n\r\n Body: #{body}"
 				puts request.inspect
 			else
-		end		
+				puts "nope"
+			end
+				
 		client.close
 	end
 }
